@@ -6,9 +6,11 @@ nextId.id = 0
 /* unused | impure */
 export const getLayers = () => {
   const layers_arr = []
+
   for (var l in layers) {
     layers_arr.push(l)
   }
+
   return layers_arr
 }
 
@@ -25,27 +27,34 @@ export function isValidLayerOperator(layer, operator) {
 /* unused | impure */
 export function isValidLayerValue(layer, operator, value) {
   var valopts = getLayerValueOptions(layer)
+
   if (!valopts) {
     return true
   }
+
   return valopts.indexOf(value) !== -1
 }
 
 /* impure | retarded return values */
 export function layerToQueryString(layer, operator, value) {
   var toStr = layers[layer].toQueryString
+
   if (!toStr) {
     toStr = getLayerArgOpts(layer).defaultToStr
   }
+
   if (!toStr) {
     toStr = wordOptions.defaultToStr
     console.warn('layerToQueryString: couldnt find a toQueryString method!')
   }
+
   var qstr = toStr(layer, operator, value)
+
   if (qstr === undefined) {
     console.warn('layerToQueryString: qstr undefined!')
     return 'undefined' // WTAF?!?! THAT'S NOT FUCKEN RIGHT.
   }
+
   return qstr
 }
 
@@ -57,9 +66,11 @@ export function getOperatorLabel(layer, operator) {
 /* impure */
 export function getLayerValueOptions(layer, operator, value) {
   var valopts = layers[layer].valueOptions
+
   if (!valopts) {
     return
   }
+
   if (typeof valopts === 'function') {
     return valopts(layer, operator, value)
   } else if (valopts.length) {
@@ -77,7 +88,9 @@ const quotedStringRE = /(?:"(?:\\"|[^"])*")/.source
 
 export function queryParse(q) {
   if (!q) return null
+
   var match = q.match(/^\s*(\w+) *(=|!=) *"((?:\\"|.)*?)"/)
+
   if (match === null) {
     return null
   }
@@ -87,6 +100,7 @@ export function queryParse(q) {
   const value = match[3]
 
   var fromStr = getLayerArgOpts(layer).fromQueryString
+
   if (!fromStr) {
     fromStr = getLayerArgOpts(layer).defaultFromString
   }
@@ -100,7 +114,9 @@ export function queryParse(q) {
 /* impure */
 export function queryToORArgs(q) {
   if (!q) return null
+
   var match = q.trim().match(queryToORArgs.re)
+
   return match
 }
 queryToORArgs.re = RegExp('(?:' + quotedStringRE + '|[^()|])+', 'g')
@@ -113,6 +129,7 @@ export function queryToANDArgs(q) {
   if (!q) return null
 
   var match = q.trim().match(queryToANDArgs.re)
+
   return match
 }
 queryToANDArgs.re = RegExp('(?:' + quotedStringRE + '|[^&])+', 'g')
@@ -123,7 +140,9 @@ queryToANDArgs.re = RegExp('(?:' + quotedStringRE + '|[^&])+', 'g')
 /* impure */
 export function queryToTokens(q) {
   if (!q) return null
+
   var match = q.match(queryToTokens.re)
+
   return match
 }
 queryToTokens.re = RegExp(
@@ -140,6 +159,7 @@ export function filterWords(s, f) {
     filteredWords.push(m)
     return '""'
   })
+
   const ret = f(filteredString)
   // restore words
 
@@ -190,6 +210,7 @@ setOptions.defaultFromString = (layer, op, val) => {
 wordOptions.defaultToStr = (layer, op, val) => {
   var unescVal = val
   var val = escapeRegExp(val)
+
   switch (op) {
     case 'is':
       return `${layer} = "${val}"`
@@ -213,10 +234,13 @@ wordOptions.defaultFromString = (layer, op, val) => {
   // layer should be good. Now figure out op, and if val is escaped or not
   if (op === '=') {
     var strippedOfSemiRE = val.replace(/^\.\*/, '').replace(/\.\*$/, '')
+
     if (strippedOfSemiRE.length !== val.length) {
       // could be one of: startswith, contains, endswith.
+
       if (!guessIfRegexp(strippedOfSemiRE)) {
         // Ok, it is one of: startswith, contains, endswith.
+
         if (val.startsWith('.*') && val.endsWith('.*')) {
           var op2 = 'contains'
         } else if (val.startsWith('.*')) {
@@ -227,6 +251,7 @@ wordOptions.defaultFromString = (layer, op, val) => {
           console.error('parsing query failed due to coding error')
           return null
         }
+
         return {
           layer: layer,
           op: op2,
@@ -245,12 +270,15 @@ wordOptions.defaultFromString = (layer, op, val) => {
   // its not regexp
   return { layer, op: op === '=' ? 'is' : 'is_not', val: unescapeRegExp(val) }
 }
+
 export function guessIfRegexp(s) {
   return !!s.match(/[^\\][-[\]{}()*+\\?.,^$|#]/) // find if it contains any unescaped regex characters
 }
+
 export function unescapeRegExp(text) {
   return text.replace(/\\([-[\]{}()*+?.,\\^$|#])/g, '$1')
 }
+
 export function escapeRegExp(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&')
 }

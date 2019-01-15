@@ -13,17 +13,17 @@ export const getLayers = () => {
 }
 
 /* impure */
-function getLayerArgOpts(layer) {
+export function getLayerArgOpts(layer) {
   return layers[layer].argOpts
 }
 
 /* unused | impure */
-function isValidLayerOperator(layer, operator) {
+export function isValidLayerOperator(layer, operator) {
   return !!layers[layer].argOpts.find(e => e.value === operator)
 }
 
 /* unused | impure */
-function isValidLayerValue(layer, operator, value) {
+export function isValidLayerValue(layer, operator, value) {
   var valopts = getLayerValueOptions(layer)
   if (!valopts) {
     return true
@@ -32,7 +32,7 @@ function isValidLayerValue(layer, operator, value) {
 }
 
 /* impure | retarded return values */
-function layerToQueryString(layer, operator, value) {
+export function layerToQueryString(layer, operator, value) {
   var toStr = layers[layer].toQueryString
   if (!toStr) {
     toStr = getLayerArgOpts(layer).defaultToStr
@@ -50,12 +50,12 @@ function layerToQueryString(layer, operator, value) {
 }
 
 /* unused | impure */
-function getOperatorLabel(layer, operator) {
+export function getOperatorLabel(layer, operator) {
   return layers[layer].argOpts[operator].label
 }
 
 /* impure */
-function getLayerValueOptions(layer, operator, value) {
+export function getLayerValueOptions(layer, operator, value) {
   var valopts = layers[layer].valueOptions
   if (!valopts) {
     return
@@ -75,7 +75,7 @@ const quotedStringRE = /(?:"(?:\\"|[^"])*")/.source
 
 /* impure */
 
-function queryParse(q) {
+export function queryParse(q) {
   if (!q) return null
   var match = q.match(/^\s*(\w+) *(=|!=) *"((?:\\"|.)*?)"/)
   if (match === null) {
@@ -98,7 +98,7 @@ function queryParse(q) {
 // out: ['word = "zebra" ', ' (word = "zoo" ...)']
 
 /* impure */
-function queryToORArgs(q) {
+export function queryToORArgs(q) {
   if (!q) return null
   var match = q.trim().match(queryToORArgs.re)
   return match
@@ -109,7 +109,7 @@ queryToORArgs.re = RegExp('(?:' + quotedStringRE + '|[^()|])+', 'g')
 // out: ['word = "zebra" ', ' (word = "zoo" ...)']
 
 /* impure */
-function queryToANDArgs(q) {
+export function queryToANDArgs(q) {
   if (!q) return null
 
   var match = q.trim().match(queryToANDArgs.re)
@@ -121,7 +121,7 @@ queryToANDArgs.re = RegExp('(?:' + quotedStringRE + '|[^&])+', 'g')
 // out: ['[word = "zebra"]', '[word = "zoo"]']
 
 /* impure */
-function queryToTokens(q) {
+export function queryToTokens(q) {
   if (!q) return null
   var match = q.match(queryToTokens.re)
   return match
@@ -135,7 +135,7 @@ var filteredWords = []
 /*To simplify matching regex filter out words within "quotemarks". This help to not stumble on any special characters that can occur there. */
 
 /* impure */
-function filterWords(s, f) {
+export function filterWords(s, f) {
   const filteredString = s.replace(/("(?:\\"|[^"])*")/g, m => {
     filteredWords.push(m)
     return '""'
@@ -245,12 +245,12 @@ wordOptions.defaultFromString = (layer, op, val) => {
   // its not regexp
   return { layer, op: op === '=' ? 'is' : 'is_not', val: unescapeRegExp(val) }
 }
-function guessIfRegexp(s) {
+export function guessIfRegexp(s) {
   return !!s.match(/[^\\][-[\]{}()*+\\?.,^$|#]/) // find if it contains any unescaped regex characters
 }
-function unescapeRegExp(text) {
+export function unescapeRegExp(text) {
   return text.replace(/\\([-[\]{}()*+?.,\\^$|#])/g, '$1')
 }
-function escapeRegExp(text) {
+export function escapeRegExp(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&')
 }

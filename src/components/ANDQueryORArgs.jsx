@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import PT from 'prop-types'
-import { CSSTransition } from 'react-transition-group'
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import dictionary from '../../../translations/dictionary'
+import { queryToORArgs, nextId } from '../lib'
+import ORArg from './ORArg'
 
 class ANDQueryORArgs extends Component {
   static propTypes = {
@@ -13,8 +15,11 @@ class ANDQueryORArgs extends Component {
 
   constructor(props) {
     super(props)
+
     this.queryStrCache = {}
+
     var match = queryToORArgs(this.props.query)
+
     if (match === null) {
       this.state = {
         ors: ['or-' + nextId()]

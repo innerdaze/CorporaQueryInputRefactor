@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import PT from 'prop-types'
-import { CSSTransition } from 'react-transition-group'
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
+import { queryToANDArgs, nextId } from '../lib'
+import ADVTokenMenu from './ADVTokenMenu'
+import ANDQueryORArgs from './ANDQueryORArgs'
 
 class ANDQueryArgs extends Component {
   static propTypes = {
@@ -112,7 +115,6 @@ class ANDQueryArgs extends Component {
         <button
           className='btn btn-xs btn-default image_button insert_arg'
           onClick={this.addADVAnd}
-          ref='addAndButton'
         >
           <i className='fa fa-plus' />
         </button>

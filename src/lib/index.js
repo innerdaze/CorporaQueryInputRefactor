@@ -1,5 +1,5 @@
 /* ok i guess... */
-const nextId = () => nextId.id++
+export const nextId = () => nextId.id++
 
 nextId.id = 0
 

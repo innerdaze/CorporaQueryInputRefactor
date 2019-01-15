@@ -1,7 +1,14 @@
 import React, { PureComponent } from 'react'
 import PT from 'prop-types'
 import dictionary from '../../../translations/dictionary'
+import {
+  layerToQueryString,
+  getLayerArgOpts,
+  queryParse,
+  getLayerValueOptions
+} from '../lib'
 
+/* wtf is evt? */
 class ORArg extends PureComponent {
   static propTypes = {
     query: PT.string,
@@ -11,10 +18,13 @@ class ORArg extends PureComponent {
     languageFromMain: PT.string.isRequired
   }
 
+  /* all this could be somewhere else */
   constructor(props) {
     super(props)
+
     var qp = queryParse(this.props.query)
 
+    /* use destructuring */
     if (qp !== null) {
       var layer = qp.layer
       var op = qp.op
@@ -30,6 +40,7 @@ class ORArg extends PureComponent {
     }
   }
 
+  /* should be bound */
   fireQueryChange() {
     const queryString = layerToQueryString(
       this.state.layer,
@@ -39,11 +50,15 @@ class ORArg extends PureComponent {
     this.props.onQueryChange(queryString)
   }
 
+  /* capital L */
   onlayerChange = evt => {
     var layer = evt.target.value
+
     this.setState(st => {
       var argOpt = getLayerArgOpts(layer)[0].value
       var lvo = getLayerValueOptions(layer, argOpt, st.argValue)
+
+      /* think it through */
       var argValue = ''
       if (lvo === undefined) argValue = ''
       else argValue = lvo[0].value
@@ -86,12 +101,14 @@ class ORArg extends PureComponent {
     }
   }
 
+  /* needs binding */
   renderInput() {
     var valueOptions = getLayerValueOptions(
       this.state.layer,
       this.state.argOpt,
       this.state.argValue
     )
+
     if (valueOptions === undefined) {
       return (
         <input
@@ -99,6 +116,7 @@ class ORArg extends PureComponent {
           className='form-control'
           value={this.state.argValue}
           onChange={this.onArgValueChange}
+          /* keep it DRY */
           onFocus={() => this.setState({ editingText: true })}
           onBlur={() => this.setState({ editingText: false })}
         />
@@ -109,10 +127,12 @@ class ORArg extends PureComponent {
           className='form-control'
           value={this.state.argValue}
           onChange={this.onArgValueChange}
+          /* keep it DRY */
           onFocus={() => this.setState({ editingText: true })}
           onBlur={() => this.setState({ editingText: false })}
         >
           {valueOptions.map(valOpt => {
+            /* needs a key */
             return <option value={valOpt.value}>{valOpt.label}</option>
           })}
         </select>
@@ -120,11 +140,13 @@ class ORArg extends PureComponent {
     }
   }
 
+  /* needs binding */
   getLayerLabel(layer) {
     return dictionary[this.props.languageFromMain].queryinput.layers[layer]
       .label
   }
 
+  /* needs binding */
   getLayerArgOpts(layer) {
     return dictionary[this.props.languageFromMain].queryinput.layers[layer]
       .argOpts
@@ -145,8 +167,7 @@ class ORArg extends PureComponent {
           className='right_col inline_block'
           style={{ display: 'inline-block' }}
         >
-          {' '}
-          {/* , margin-left: "5px" */}
+          {' ' /* why is this here? */}
           <div className='arg_selects form-inline'>
             <select
               className='arg_type form-control'

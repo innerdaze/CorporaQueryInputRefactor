@@ -8,6 +8,8 @@ import {
   getLayerValueOptions
 } from '../lib'
 
+const SelectOptions = ({ data, value, label }) => <option=
+
 /* wtf is evt? */
 class ORArg extends PureComponent {
   static propTypes = {

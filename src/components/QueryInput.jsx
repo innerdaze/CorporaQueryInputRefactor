@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PT from 'prop-types'
+import ADVTokens from './ADVTokens'
 
 class QueryInput extends Component {
   static propTypes = {
